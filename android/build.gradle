@@ -1,0 +1,61 @@
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        // 升级到 AGP 8.9.1 以满足部分 AndroidX 库的 AAR 元数据要求
+        // 如果有需要, 可进一步升级到最新小版本 (例如 8.9.2+)
+        classpath 'com.android.tools.build:gradle:8.9.1'
+    }
+}
+rootProject.buildDir = "../build"
+subprojects {
+    // 只为 app 项目设置自定义构建目录，其他插件使用默认目录
+    if (project.name == 'app') {
+        project.buildDir = "${rootProject.buildDir}/${project.name}"
+    }
+    
+    // 为所有子项目设置 Android 配置
+    project.ext {
+        compileSdkVersion = 36
+        minSdkVersion = 21
+        targetSdkVersion = 36
+    }
+    
+    // 禁用所有子项目的单元测试任务以避免路径冲突
+    afterEvaluate {
+        tasks.withType(Test) {
+            enabled = false
+        }
+        // 禁用所有编译单元测试相关的任务
+        tasks.matching { it.name.contains('UnitTest') }.configureEach {
+            enabled = false
+        }
+        tasks.matching { it.name.contains('compileDebugUnitTest') }.configureEach {
+            enabled = false
+        }
+        tasks.matching { it.name.contains('compileReleaseUnitTest') }.configureEach {
+            enabled = false
+        }
+    }
+}
+subprojects {
+    project.evaluationDependsOn(":app")
+}
+
+tasks.register("clean", Delete) {
+    delete rootProject.buildDir
+}
+
+// 确保 Java 编译时使用 UTF-8 编码
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}

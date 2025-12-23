@@ -1,0 +1,24 @@
+{
+  "start": [
+    {"move": "h0g2", "count": 210},
+    {"move": "i0h0", "count": 199},
+    {"move": "a0b0", "count": 198},
+    {"move": "b0c2", "count": 181},
+    {"move": "g3g4", "count": 170},
+    {"move": "c3c4", "count": 151},
+    {"move": "d0e1", "count": 122},
+    {"move": "e3e4", "count": 112},
+    {"move": "a0a1", "count": 104},
+    {"move": "g0e2", "count": 86},
+    {"move": "i0i1", "count": 80},
+    {"move": "f0e1", "count": 77},
+    {"move": "c0e2", "count": 76},
+    {"move": "b0b4", "count": 65},
+    {"move": "i3i4", "count": 60},
+    {"move": "b0a2", "count": 60},
+    {"move": "h0h4", "count": 55},
+    {"move": "h2i2", "count": 53},
+    {"move": "e0e1", "count": 53},
+    {"move": "h0i2", "count": 51}
+  ]
+}

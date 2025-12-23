@@ -1,0 +1,28 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "xiangqi_flutter",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      // 关键：把 EGL_emulation 拉黑
+      "toolArgs": [
+        "--device-user",
+        "0",
+        "--pid-file",
+        ".vscode/flutter.pid",
+        // 重点在这行
+        "--dart-define=flutter.logFilter=EGL_emulation.*"
+      ],
+      // 或者更直接：用 adb 参数
+      "args": [
+        "--flavor",
+        "dev"
+      ],
+      "env": {
+        "FLUTTER_ADB_LOGCAT_ARGS": "-v brief *:S EGL_emulation:V"
+      }
+    }
+  ]
+}

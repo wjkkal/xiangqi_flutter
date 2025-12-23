@@ -1,0 +1,16 @@
+// 禁用 NetBeans Gradle 工具链插件
+allprojects {
+    plugins.withId("org.netbeans.modules.gradle.tooling.NetBeansToolingPlugin") {
+        project.logger.warn("Disabling NetBeans Gradle tooling plugin for Flutter project")
+        // 不应用该插件
+    }
+}
+
+// 防止 NetBeans 工具链尝试访问测试任务
+gradle.taskGraph.whenReady { graph ->
+    graph.allTasks.each { task ->
+        if (task.name.contains('UnitTest') || task.name.contains('Test')) {
+            task.enabled = false
+        }
+    }
+}

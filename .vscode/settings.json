@@ -1,0 +1,56 @@
+{
+    "cmake.sourceDirectory": "F:/Dev/wang/xiangqi_flutter/android/app/src/main/cpp",
+    "android.logcat.filter": "EGL_emulation",   // 只留想要的 tag 也可以写多个
+  "android.logcat.excludeRegex": "EGL_emulation|app_time_stats",
+  
+  // 禁用 Oracle Java 扩展对 Gradle 的管理,避免与 Flutter 项目冲突
+  "java.import.gradle.enabled": false,
+  "java.import.gradle.offline.enabled": false,
+  "java.jdt.ls.java.home": null,
+  "java.configuration.updateBuildConfiguration": "disabled",
+  // "java.autobuild.enabled": false,
+  "java.import.exclusions": ["**/android/**", "**/.gradle/**", "**/build/**"],
+  "java.project.sourcePaths": [],
+  "java.project.outputPath": "",
+  "java.project.referencedLibraries": [],
+  "files.exclude": {
+    "**/android/.gradle": true,
+    "**/android/build": true,
+    "**/android/.idea": true
+  },
+  "svn.delete.ignoredRulesForDeletedFiles": [
+    "AI_ENGINE_VALIDATION_SUMMARY.md",
+    "AI_ERROR_HANDLING.md",
+    "AI_MOVE_VALIDATION_FIX.md",
+    "ANDROID_CPU_MEMORY_INFO.md",
+    "CHESS_PIECES_README.md",
+    "CHESS_RULES_VALIDATION.md",
+    "CUSTOM_PAINTER_README.md",
+    "DEBUG_SUMMARY.md",
+    "DEVICE_INFO_ENHANCEMENT.md",
+    "DEVICE_INFO_IMPLEMENTATION.md",
+    "DEVICE_INFO_PLUS_GUIDE.md",
+    "ENGINE_VALIDATION_SYSTEM.md",
+    "FEATURE_ENHANCEMENT_COMPLETE.md",
+    "IMPLEMENTATION_VERIFICATION.md",
+    "INTEGRATION_COMPLETE.md",
+    "INTEGRATION_COMPLETION_REPORT.md",
+    "INTERACTION_LOGIC_README.md",
+    "PIKAFISH_COMPILATION_SUCCESS.md",
+    "PIKAFISH_INTEGRATION_GUIDE.md",
+    "PIKAFISH_INTEGRATION_STATUS.md",
+    "PIKAFISH_INTEGRATION_SUCCESS.md",
+    "PIKAFISH_INTEGRATION_TEST.md",
+    "PIKAFISH_QUICK_SETUP.md",
+    "POSITION_EVALUATION_FEATURE.md",
+    "PROBLEM_RESOLUTION_SUMMARY.md",
+    "PROJECT_SUMMARY.md",
+    "README.md",
+    "TESTING_GUIDE.md",
+    "TEST_INSTRUCTIONS.md",
+    "UCI_INTEGRATION_TEST.md",
+    "android\\app\\src\\main\\kotlin\\com\\example\\xiangqi_flutter\\PikafishUciEngine.kt",
+    "compile_pikafish.bat",
+    "pikafish_debug.log"
+  ] // 黑名单
+}

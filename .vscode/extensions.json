@@ -1,0 +1,21 @@
+{
+  "recommendations": [],
+  "unwantedRecommendations": [
+    "vscjava.vscode-gradle",
+    "redhat.java",
+    "vscjava.vscode-maven",
+    "vscjava.vscode-java-debug",
+    "vscjava.vscode-java-test",
+    "vscjava.vscode-java-dependency",
+    "vscjava.vscode-lombok",
+    "vscjava.vscode-java-upgrade",
+    "vscjava.migrate-java-to-azure",
+    "vmware.vscode-spring-boot",
+    "oracle.oracle-java",
+    "octref.vetur",
+    "hollowtree.vue-snippets",
+    "oysun.vuehelper",
+    "shenjiaolong.vue-helper",
+    "vue.volar"
+  ]
+}

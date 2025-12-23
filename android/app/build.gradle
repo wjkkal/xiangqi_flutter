@@ -1,0 +1,245 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
+    id "dev.flutter.flutter-gradle-plugin"
+}
+
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file('key.properties')
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+android {
+    namespace = "com.example.xiangqi_flutter"
+    compileSdk = 36
+    // 让AGP自动选择兼容的NDK版本,避免符号剥离失败
+    // ndkVersion = "29.0.14206865"
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = "17"
+        freeCompilerArgs += [
+            "-opt-in=kotlin.ExperimentalStdlibApi",
+            "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
+        ]
+    }
+
+    // 禁用单元测试以避免 provider 查询问题
+    testOptions {
+        unitTests.all {
+            enabled = false
+        }
+        unitTests.returnDefaultValues = true
+    }
+    
+    // 禁用 lint 检查中的单元测试相关任务
+    lintOptions {
+        // checkReleaseBuilds false
+        abortOnError false
+    }
+
+    // 禁用 dex 预处理以避免 Google Ads SDK 的 profile_saver 崩溃
+    dexOptions {
+        preDexLibraries = false
+        javaMaxHeapSize "6g"
+    }
+
+    defaultConfig {
+        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+        applicationId = "com.example.xiangqi_flutter"
+        // You can update the following values to match your application needs.
+        // For more information, see: https://flutter.dev/to/review-gradle-config.
+        minSdkVersion = flutter.minSdkVersion
+        targetSdk = 36
+        versionCode = 34
+        versionName = "1.0.34"
+        
+        // Configure external native build
+        externalNativeBuild {
+            cmake {
+                cppFlags '-std=c++17', '-fno-exceptions'
+                // 添加 16KB 页面对齐支持(debug 和 release 分别在 buildTypes 中设置 STL 类型)
+                arguments '-DANDROID_PLATFORM=android-21',
+                          '-DCMAKE_SHARED_LINKER_FLAGS=-Wl,-z,max-page-size=16384',
+                          '-DCMAKE_EXE_LINKER_FLAGS=-Wl,-z,max-page-size=16384'
+            }
+        }
+        
+        // 支持 16 KB 页面对齐(Android 15+)
+        // pikafish引擎使用__uint128_t,只支持64位架构
+        // 仅保留arm64-v8a以减小AAB大小
+        ndk {
+            abiFilters 'arm64-v8a', 'x86_64'
+            // debugSymbolLevel 'FULL'
+        }
+        
+        // 禁用测试相关的运行时优化
+        testInstrumentationRunnerArguments = [
+            disableAnalytics: "true",
+            clearPackageData: "true"
+        ]
+        
+        // 禁用密度分割，但不禁用ABI分割以便Play Store优化下载
+        splits.abi.enable = false
+        splits.density.enable = false
+    }
+    // Configure CMake build
+    externalNativeBuild {
+        cmake {     
+            path file('src/main/cpp/CMakeLists.txt')
+            version '3.22.1'
+        }
+    }
+    
+    // 为CMake构建指定支持的ABI(仅64位)
+    defaultConfig {
+        externalNativeBuild {
+            cmake {
+                abiFilters 'arm64-v8a', 'x86_64'
+            }
+        }
+    }
+
+    signingConfigs {
+        release {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+            storePassword keystoreProperties['storePassword']
+        }
+    }
+
+    buildTypes {
+        debug {
+            // Debug 版本支持 16KB 页面大小
+            minifyEnabled false
+            shrinkResources false
+            // 禁用 profile-guided optimization 以避免 profile_saver 崩溃
+            debuggable true
+            
+            // 禁用 WebView 优化以避免 MemoryInfra 崩溃
+            manifestPlaceholders = [
+                webViewOptOut: "true"
+            ]
+            
+            // 为APK构建启用16KB对齐
+            // packagingOptions {
+            //     doNotStrip '**/*.so'
+            // }
+            
+            // 强制对所有native库使用未压缩模式并启用16KB对齐
+            packaging {
+                jniLibs {
+                    useLegacyPackaging = false
+                }
+            }
+            
+            // Debug 使用 c++_shared 以便在模拟器上快速测试
+            externalNativeBuild {
+                cmake {
+                    arguments '-DANDROID_STL=c++_shared',
+                              '-DCMAKE_SHARED_LINKER_FLAGS=-Wl,-z,max-page-size=16384 -Wl,-z,separate-code',
+                              '-DCMAKE_EXE_LINKER_FLAGS=-Wl,-z,max-page-size=16384 -Wl,-z,separate-code'
+                }
+            }
+        }
+        
+        release {
+            // 使用正式签名配置
+            signingConfig = signingConfigs.release
+            
+            // 启用代码混淆和资源压缩以减小 APK 体积
+            minifyEnabled true
+            shrinkResources true
+            
+            // 使用 ProGuard 规则文件
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            
+            // 16KB对齐的native库不能被strip,保留符号以避免警告
+            // packagingOptions {
+            //     doNotStrip '**/*.so'
+            // }
+            
+            // 强制对所有native库使用未压缩模式并启用16KB对齐
+            packaging {
+                jniLibs {
+                    useLegacyPackaging = false
+                }
+            }
+            
+            // Release 使用 c++_static 避免 libc++_shared.so 的 16KB 对齐问题
+            externalNativeBuild {
+                cmake {
+                    arguments '-DANDROID_STL=c++_static',
+                              '-DCMAKE_SHARED_LINKER_FLAGS=-Wl,-z,max-page-size=16384 -Wl,-z,separate-code',
+                              '-DCMAKE_EXE_LINKER_FLAGS=-Wl,-z,max-page-size=16384 -Wl,-z,separate-code'
+                }
+            }
+        }
+    }
+
+    // 支持 16 KB 页面对齐 - 对所有未压缩的原生库进行 16KB zip 对齐
+    packaging {
+        jniLibs {
+            // 使用 modern packaging(允许未压缩的共享库)
+            // AGP >= 8.5.1 会为未压缩的共享库执行 16KB 对齐
+            useLegacyPackaging = false
+        }
+    }
+
+    // 为 bundle 构建设置对齐选项和优化设置
+    bundle {
+        // 确保在 App Bundle 中启用未压缩的原生库
+        language {
+            enableSplit = false
+        }
+        density {
+            enableSplit = false
+        }
+        abi {
+            // 启用ABI分割让Play Store为不同设备生成优化的APK
+            enableSplit = true
+        }
+    }
+    
+    // 配置打包选项以确保native库正确对齐
+    packaging {
+        // 确保native库使用未压缩格式并正确对齐
+        resources {
+            excludes += ['META-INF/INDEX.LIST', 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA']
+        }
+        
+        // 为所有native库禁用压缩，这对于16KB对齐至关重要
+        jniLibs {
+            // 禁用传统打包模式
+            useLegacyPackaging = false
+        }
+    }
+    
+    // 确保打包时不进行可能干扰对齐的优化
+    aaptOptions {
+        cruncherEnabled = false
+    }
+    
+    // // 明确设置APK创建器的配置，保留关键设置
+    // packagingOptions {
+    //     doNotStrip '**/*.so'
+    // }
+    
+    // 明确设置 16KB 页面对齐
+    dependenciesInfo {
+        // 包含依赖信息以帮助 Google Play 正确优化
+        includeInApk = true
+        includeInBundle = true
+    }
+}
+
+flutter {
+    source = "../.."
+}

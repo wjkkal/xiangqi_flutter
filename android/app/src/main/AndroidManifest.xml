@@ -1,0 +1,50 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    
+    <application 
+        android:label="中国象棋逗逗版" 
+        android:name=".MyApplication" 
+        android:icon="@mipmap/ic_launcher"
+        android:hardwareAccelerated="true"
+        android:vmSafeMode="true">  
+        
+        <!-- 禁用 WebView 的 profile_saver -->
+        <meta-data 
+            android:name="android.webkit.WebView.EnableSafeBrowsing"
+            android:value="false" />
+        <meta-data 
+            android:name="android.webkit.WebView.MetricsOptOut"
+            android:value="true" />  
+        
+        <activity 
+            android:name=".MainActivity" 
+            android:exported="true" 
+            android:launchMode="singleTop" 
+            android:taskAffinity="" 
+            android:theme="@style/LaunchTheme" 
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode" 
+            android:windowSoftInputMode="adjustResize">
+            <meta-data android:name="io.flutter.embedding.android.NormalTheme" android:resource="@style/NormalTheme" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        
+        <meta-data android:name="flutterEmbedding" android:value="2" />
+        <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-2605757727090910~2765926450"/>
+    </application>
+    
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.PROCESS_TEXT"/>
+            <data android:mimeType="text/plain"/>
+        </intent>
+
+        <package android:name="com.google.android.gms.policy_service_systems" />
+        <intent>
+            <action android:name="com.google.android.gms.ads.MobileAds" />
+        </intent>
+    </queries>
+</manifest>
