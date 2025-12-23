@@ -96,16 +96,6 @@ flutter test  # 如后续加入单元测试
 ## 许可证（License）
 本项目及其第三方引擎 `third_party/pikafish` 使用 **GNU GENERAL PUBLIC LICENSE Version 3 (GPLv3)** 分发。
 
-重要说明：
-- 本仓库包含 Pikafish 的完整源代码（`third_party/pikafish/`），其许可为 GPLv3。根据 GPLv3 的条款，包含 GPLv3 代码的派生或组合分发必须在相同的 GPLv3 许可证下提供源代码与许可条款。
-- 我们已在仓库根添加完整的 `LICENSE`（GPLv3 正文），并在 `third_party/pikafish/Copying.txt` 中保留了原始引擎的版权与许可声明。
-
-分发合规清单（简明）：
-- 如你要分发已编译的二进制（APK 等），请同时提供或指向完整的源代码（例如本仓库 URL）。
-- 保留并分发本仓库中的 `LICENSE` 文件与 `third_party/pikafish/Copying.txt`，确保接收者能查看 GPLv3 条款。
-- 若你修改了 Pikafish 的源文件，请在修改处注明变更并保留原始版权声明（参见 GPLv3 第 5 条）。
-- 我们还在 `THIRD_PARTY_LICENSES.md` 中列出了第三方组件与其许可证，便于分发时核对。
-
 ---
 
 ## 致谢
